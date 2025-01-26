@@ -3,8 +3,13 @@
     public class Airport
     {
         public string Iata { get; set; }
-        public double Latitude { get; set; }
-        public double Longitude { get; set; }
+        public Location Location { get; set; }
 
+    }
+
+    public class Location
+    {
+        public double Lon { get; set; }
+        public double Lat { get; set; }
     }
 }

@@ -32,8 +32,8 @@ namespace Airports.Controllers
             }
 
             var distance = DistanceCalculator.CalculateDistance(
-                airport1.Latitude, airport1.Longitude,
-                airport2.Latitude, airport2.Longitude);
+                airport1.Location.Lat, airport1.Location.Lon,
+                airport2.Location.Lat, airport2.Location.Lon);
 
             return Ok(new
             {
