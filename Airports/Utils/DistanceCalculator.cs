@@ -6,11 +6,16 @@
         {
             const double EarthRadius = 6371;
 
-            var dLat = ToRadians(lat2 - lat1);
-            var dLon = ToRadians(lon2 - lon1);
+            var lat1Rad = ToRadians(lat1);
+            var lat2Rad = ToRadians(lat2);
+            var lon1Rad = ToRadians(lon1);
+            var lon2Rad = ToRadians(lon2);
+
+            var dLat = lat2Rad - lat1Rad;
+            var dLon = lon2Rad - lon1Rad;
 
             var a = Math.Sin(dLat / 2) * Math.Sin(dLat / 2) +
-                    Math.Cos(ToRadians(lat1)) * Math.Cos(ToRadians(lat2)) *
+                    Math.Cos(lat1Rad) * Math.Cos(lat2Rad) *
                     Math.Sin(dLon / 2) * Math.Sin(dLon / 2);
 
             var c = 2 * Math.Atan2(Math.Sqrt(a), Math.Sqrt(1 - a));
@@ -19,7 +24,7 @@
 
         private static double ToRadians(double degrees) 
         {
-            return (degrees * Math.PI / 100);
+            return (degrees * Math.PI / 180); 
         }
     }
 }
