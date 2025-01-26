@@ -20,7 +20,7 @@ namespace Airports.Controllers
         {
             if (string.IsNullOrEmpty(iata1) || string.IsNullOrEmpty(iata2))
             {
-                return BadRequest("IATA-коды не должны быть пустыми.");
+                return BadRequest("IATA-code is empty.");
             }
 
             var airport1 = await _airportService.GetAirportByIataAsync(iata1);
@@ -28,7 +28,7 @@ namespace Airports.Controllers
 
             if (airport1 == null || airport2 == null)
             {
-                return NotFound("Один из аэропортов не найден.");
+                return NotFound("Airport is not found");
             }
 
             var distance = DistanceCalculator.CalculateDistance(
