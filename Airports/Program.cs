@@ -1,3 +1,4 @@
+using Airports.Interfaces;
 using Airports.Services;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -7,7 +8,8 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllers();
 builder.Services.AddHttpClient();
 
-builder.Services.AddScoped<AirportService>();
+builder.Services.AddScoped<IAirportService, AirportService>();
+builder.Services.AddScoped<IDistanceService, DistanceService>();
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();

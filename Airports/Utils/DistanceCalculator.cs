@@ -1,8 +1,8 @@
 ﻿namespace Airports.Utils
 {
-    public static class DistanceCalculator
+    public class DistanceCalculator
     {
-        public static double CalculateDistance(double lat1, double lon1, double lat2, double lon2)
+        public static double CalculateHaversineDistance(double lat1, double lon1, double lat2, double lon2)
         {
             const double EarthRadius = 6371;
 

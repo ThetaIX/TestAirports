@@ -1,3 +1,5 @@
+using Airports.Interfaces;
+using Airports.Models;
 using Airports.Services;
 using Airports.Utils;
 using Microsoft.AspNetCore.Mvc;
@@ -5,42 +7,33 @@ using Microsoft.AspNetCore.Mvc;
 namespace Airports.Controllers
 {
     [ApiController]
-    [Route("[controller]")]
+    [Route("api/distance")]
     public class DistanceCalcController : ControllerBase
     {
-        private readonly AirportService _airportService;
+        private readonly IDistanceService _distanceService;
 
-        public DistanceCalcController(AirportService airportService)
+        public DistanceCalcController(IDistanceService distanceService)
         {
-            _airportService = airportService;
+            _distanceService = distanceService;
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetDistance(string iata1, string iata2)
+        public async Task<IActionResult> CalculateDistance(string iata1, string iata2)
         {
-            if (string.IsNullOrEmpty(iata1) || string.IsNullOrEmpty(iata2))
+            DistRequest request = new DistRequest() { FromIata = iata1, ToIata = iata2 };
+            if (request == null || string.IsNullOrWhiteSpace(request.FromIata) || string.IsNullOrWhiteSpace(request.ToIata))
             {
-                return BadRequest("IATA-code is empty.");
+                return BadRequest(new { message = "Airport codes cannot be blank." });
             }
 
-            var airport1 = await _airportService.GetAirportByIataAsync(iata1);
-            var airport2 = await _airportService.GetAirportByIataAsync(iata2);
+            var response = await _distanceService.CalculateDistanceAsync(request);
 
-            if (airport1 == null || airport2 == null)
+            if (response == null)
             {
-                return NotFound("Airport is not found");
+                return NotFound(new { message = "One or both airports are not found." });
             }
 
-            var distance = DistanceCalculator.CalculateDistance(
-                airport1.Location.Lat, airport1.Location.Lon,
-                airport2.Location.Lat, airport2.Location.Lon);
-
-            return Ok(new
-            {
-                IATA1 = iata1,
-                IATA2 = iata2,
-                DistanceInMiles = distance
-            });
+            return Ok(response);
         }
     }
 }
