@@ -26,6 +26,11 @@ namespace Airports.Controllers
                 return BadRequest(new { message = "Airport codes cannot be blank." });
             }
 
+            if (request.ToIata == request.FromIata)
+            {
+                return BadRequest(new { message = "Identical IATA codes" });
+            }
+
             var response = await _distanceService.CalculateDistanceAsync(request);
 
             if (response == null)

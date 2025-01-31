@@ -7,23 +7,20 @@ namespace Airports.Services
     public class DistanceService : IDistanceService
     {
         private readonly IAirportService _airportService;
+        private readonly IDistanceCacheService _distanceCache;
 
-        public DistanceService(IAirportService airportService)
+        public DistanceService(IAirportService airportService, IDistanceCacheService distanceCache)
         {
             _airportService = airportService;
+            _distanceCache = distanceCache;
         }
 
         public async Task<DistResponse> CalculateDistanceAsync(DistRequest request)
         {
-            if (request.FromIata.ToUpper() == request.ToIata.ToUpper())
+            var cachedResponse = await _distanceCache.GetCachedDistanceAsync(request.FromIata, request.ToIata);
+            if (cachedResponse != null)
             {
-                return new DistResponse
-                {
-                    From = request.FromIata,
-                    To = request.ToIata,
-                    DistanceKm = 0,
-                    Message = "Both airports are the same, the distance is 0."
-                };
+                return cachedResponse;
             }
 
             var fromAirport = await _airportService.GetAirportCoordinatesAsync(request.FromIata);
@@ -39,13 +36,17 @@ namespace Airports.Services
                 toAirport.Location.Lat, toAirport.Location.Lon
             );
 
-            return new DistResponse
+            DistResponse distResponse = new DistResponse
             {
                 From = fromAirport.Iata,
                 To = toAirport.Iata,
                 DistanceKm = distance,
                 Message = "The distance has been successfully calculated."
             };
+
+            await _distanceCache.SaveDistanceAsync(distResponse);
+
+            return distResponse;
         }
     }
 }

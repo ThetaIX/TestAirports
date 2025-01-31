@@ -8,8 +8,11 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllers();
 builder.Services.AddHttpClient();
 
+builder.Services.AddMemoryCache();
+
 builder.Services.AddScoped<IAirportService, AirportService>();
 builder.Services.AddScoped<IDistanceService, DistanceService>();
+builder.Services.AddScoped<IDistanceCacheService, DistanceCacheService>();
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();

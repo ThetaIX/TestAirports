@@ -10,11 +10,13 @@ namespace Airports.Tests
     {
         private readonly DistanceService _distanceService;
         private readonly Mock<IAirportService> _mockGeoService;
+        private readonly Mock<IDistanceCacheService> _mockDistanceCache;
 
         public DistanceServiceTests()
         {
             _mockGeoService = new Mock<IAirportService>();
-            _distanceService = new DistanceService(_mockGeoService.Object);
+            _mockDistanceCache = new Mock<IDistanceCacheService>();
+            _distanceService = new DistanceService(_mockGeoService.Object, _mockDistanceCache.Object);
         }
 
         [Fact]
